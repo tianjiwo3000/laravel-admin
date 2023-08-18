@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -152,7 +153,7 @@ class AdminController extends Controller
             ->sortBy('sort')
             ->transform(function($item) {
             parse_str($item->param, $param);
-            $item->url = route($item->route, $param);
+            $item->url = Route::has($item->route) ? route($item->route, $param) : '';
             return $item;
         })->toArray();
         $realPermissions = ArrayHelp::list_to_tree($realPermissions, 'id', 'pid', 'children');

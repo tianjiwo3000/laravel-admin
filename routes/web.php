@@ -12,9 +12,7 @@
 */
 use \Illuminate\Support\Facades\Route;
 Route::get('/', function () {
-    return 'ok~';
+    return '欢迎来到德莱联盟!!!';
 });
-//下载
-Route::get('/app/download/{app_type}','Api\\V1\\AppController@Download');
 
 

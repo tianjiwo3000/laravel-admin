@@ -104,7 +104,7 @@
                                 });
                             } else if (menudata.id === "assign") {
                                 getForm('{{route('admin.role-assign', ['id' => '###'])}}'. replace(/###/, obj.data.id), '分配角色', function (data) {
-                                    layui.table.reloadData(obj.config.id);
+
                                 });
                             }
                         }

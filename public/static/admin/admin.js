@@ -49,40 +49,44 @@ function getForm(url, title, callback) {
                 }
                 $(layero).find('.layui-layer-btn0').attr('disabled', 'disabled');
                 let _form = $(layero).find('form');
-                let formValues = _form.serializeArray();
-                let switchTest = _form.find('input[lay-skin=switch]');
-                switchTest.each(function() {
-                    let layValue = $(this).attr('lay-value');
-                    let layValueData = layValue ? layValue.split('|') : [1, 0];
-                    let obj = {
-                        name: $(this).attr('name'),
-                        value: $(this).siblings('.layui-form-switch').hasClass('layui-form-onswitch') ? layValueData[0] : layValueData[1],
-                    };
-                    formValues.push(obj);
-                });
-                layui.form.on('submit(layerForm)', function (data) {
-                    $.ajax({
-                        url:  _form.attr('action') || '',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: formValues,
-                    }).done(function (res) {
-                        if (res.code == 0) {
-                            layer.msg(res.msg, {time: 1200}, function () {
-                                layer.close(index);
-                                callback(res.data);
+                if (_form.length) {
+                    let formValues = _form.serializeArray();
+                    let switchTest = _form.find('input[lay-skin=switch]');
+                    switchTest.each(function() {
+                        let layValue = $(this).attr('lay-value');
+                        let layValueData = layValue ? layValue.split('|') : [1, 0];
+                        let obj = {
+                            name: $(this).attr('name'),
+                            value: $(this).siblings('.layui-form-switch').hasClass('layui-form-onswitch') ? layValueData[0] : layValueData[1],
+                        };
+                        formValues.push(obj);
+                    });
+                    layui.form.on('submit(layerForm)', function (data) {
+                        $.ajax({
+                            url:  _form.attr('action') || '',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: formValues,
+                        }).done(function (res) {
+                            if (res.code == 0) {
+                                layer.msg(res.msg, {time: 1200}, function () {
+                                    layer.close(index);
+                                    callback(res.data);
+                                });
+                            } else {
+                                var str = res.msg || '服务器异常';
+                                layer.msg(str);
+                                $(layero).find('.layui-layer-btn0').removeAttr('disabled')
+                            }
+                        })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                $(layero).find('.layui-layer-btn0').removeAttr('disabled')
                             });
-                        } else {
-                            var str = res.msg || '服务器异常';
-                            layer.msg(str);
-                            $(layero).find('.layui-layer-btn0').removeAttr('disabled')
-                        }
-                    })
-                        .fail(function (jqXHR, textStatus, errorThrown) {
-                            $(layero).find('.layui-layer-btn0').removeAttr('disabled')
-                        });
-                });
-
+                    });
+                } else {
+                    layer.close(index);
+                    callback(null);
+                }
             },
             btn2: function (index) {
                 layer.close(index);
